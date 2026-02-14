@@ -432,7 +432,7 @@
       margin: 26px auto 48px;
       padding: 22px;
       text-align: center;
-      background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .02));
+      background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(227, 25, 187, 0.02));
       border: 1px solid rgba(255, 255, 255, .08);
       border-radius: 16px;
     }
@@ -727,10 +727,44 @@
         transform: translate(-50%, -50%) rotate(-10deg) scale(1.05);
       }
     }
+
+    /* Start Overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: #0f0f14;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      transition: opacity 0.5s ease;
+    }
+
+    .overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .overlay-content {
+      text-align: center;
+    }
+
+    .overlay h2 {
+      font-family: "Playfair Display", serif;
+      font-size: 32px;
+      margin-bottom: 24px;
+      color: #fff;
+    }
   </style>
 </head>
 
 <body>
+  <div class="overlay" id="startOverlay">
+    <div class="overlay-content">
+      <h2>For My Valentine ❤</h2>
+      <button class="btn btn-primary" id="enterBtn">Click to Open</button>
+    </div>
+  </div>
+
   <div class="bg-heart" aria-hidden="true"></div>
   <div class="bg-text">I love u dii azhagii</div>
 
@@ -748,9 +782,17 @@
       <h1 id="headline">Hey, <span id="val-name">Myvizhi</span> — Will you be my Valentine<span class="caret"></span>
       </h1>
       <p id="message">i love u dii azhagii</p>
+
+      <!-- Spotify Embed -->
+      <div style="margin: 20px 0;">
+        <iframe style="border-radius:12px"
+          src="https://open.spotify.com/embed/track/0UNQnOQw0Tr3C6YeMXvDf9?utm_source=generator&theme=0" width="100%"
+          height="152" frameBorder="0" allowfullscreen=""
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+
       <div class="btn-row">
         <button class="btn btn-primary" id="openPersonalize">Personalize this</button>
-        <button class="btn btn-ghost" id="playSong">Play our song ♪</button>
       </div>
       <div class="divider"></div>
     </section>
@@ -844,8 +886,7 @@
     </div>
   </div>
 
-  <audio controls autoplay loop id="audio" preload="auto"
-    src="https://cdn.pixabay.com/download/audio/2022/10/31/audio_b2f3f507b2.mp3?filename=romantic-ambient-124008.mp3"></audio>
+
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
@@ -892,44 +933,12 @@
       pulseHeart();
     });
 
-    // Audio controls
-    const audio = document.getElementById('audio');
-    const toast = document.getElementById('toast');
-    const playSong = document.getElementById('playSong');
-    let playing = false;
+    // Audio controls (Spotify iframe handles audio, so only overlay logic remains)
+    const startOverlay = document.getElementById('startOverlay');
+    const enterBtn = document.getElementById('enterBtn');
 
-    // Sync button state with actual audio state
-    function updateAudioButton() {
-      if (audio.paused) {
-        playSong.textContent = 'Play our song ♪';
-        playing = false;
-      } else {
-        playSong.textContent = 'Pause our song ⏸';
-        playing = true;
-      }
-    }
-
-    // Listen for state changes
-    audio.addEventListener('play', updateAudioButton);
-    audio.addEventListener('pause', updateAudioButton);
-
-    playSong.addEventListener('click', async () => {
-      try {
-        if (audio.paused) {
-          await audio.play();
-          toast.textContent = 'Song playing...';
-        } else {
-          audio.pause();
-          toast.textContent = 'Paused.';
-        }
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 1600);
-      } catch (e) {
-        console.error("Audio playback error:", e);
-        toast.textContent = 'Tap to allow audio';
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 1600);
-      }
+    enterBtn.addEventListener('click', () => {
+      startOverlay.classList.add('hidden');
     });
 
     // Proposal buttons
